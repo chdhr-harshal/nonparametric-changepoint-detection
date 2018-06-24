@@ -120,7 +120,7 @@ def split(changes, D, min_size, for_sim):
     else:
         for i in range(1,len(splits)):
             if energy[splits[i-1],0]:
-                tmp = energy[splits[i-1],]
+                tmp = np.copy(energy[splits[i-1],])
             else:
                 tmp = find_split_point(splits[i-1], splits[i]-1, D, min_size)
                 energy[splits[i-1], 0] = tmp[0]
@@ -238,13 +238,13 @@ def significance_test(D, R, changes, min_size, obs):
     if R == 0:
         return np.array([0, 0])
     over = 0
-    for f in xrange(R):
+    for f in xrange(R+1):
         D1 = permute_within_cluster(D, changes)
         tmp = split(changes, D1, min_size, True)
         if tmp['fourth'] >= obs:
             over += 1
 
-    p_val = (1 + over)/(f + 1)
+    p_val = over/(f + 1)
     return np.array([p_val, f])
 
 def permute_within_cluster(D, points):
